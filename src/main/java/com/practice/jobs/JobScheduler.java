@@ -87,7 +87,7 @@ public class JobScheduler {
             return false;
         }
         for (String dependencyId : record.job.dependsOn()) {
-            if (state(dependencyId) == JobState.PENDING) {
+            if (state(dependencyId) != JobState.SUCCEEDED) {
                 return false;
             }
         }
