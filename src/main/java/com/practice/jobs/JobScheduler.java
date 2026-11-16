@@ -101,7 +101,7 @@ public class JobScheduler {
             record.state = JobState.SUCCEEDED;
         } catch (Exception e) {
             record.lastError = e.getMessage();
-            if (record.attempts > record.job.maxAttempts()) {
+            if (record.attempts >= record.job.maxAttempts()) {
                 record.state = JobState.DEAD_LETTERED;
                 deadLetters.add(record.job.id());
             } else {
@@ -112,6 +112,6 @@ public class JobScheduler {
 
     /** Delay before the next try, after the given number of failed attempts (1, 2, 3...). */
     private long backoffAfter(int failedAttempts) {
-        return baseBackoffMillis * (1L << failedAttempts);
+        return  baseBackoffMillis * (1L << failedAttempts-1);
     }
 }
