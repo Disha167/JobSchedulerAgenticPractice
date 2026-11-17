@@ -22,7 +22,7 @@ public class SlidingWindowRateLimiter {
     /** Records and allows the request if the key is under its limit; otherwise rejects it. */
     public boolean tryAcquire(String key, long now) {
         Deque<Long> times = recent.computeIfAbsent(key, k -> new ArrayDeque<>());
-        while (!times.isEmpty() && times.peekFirst() < now - windowMillis) {
+        while (!times.isEmpty() && times.peekFirst() <= now - windowMillis) {
             times.pollFirst();
         }
         if (times.size() >= maxRequests) {

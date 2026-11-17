@@ -38,8 +38,10 @@ public class JobScheduler {
 
     /** @return true if accepted, false if a job with this id was already submitted */
     public boolean submit(Job job) {
-        JobRecord previous = jobs.put(job.id(), new JobRecord(job, nextSequence++));
-        return previous == null;
+        JobRecord previous=null;
+        if(!jobs.containsKey(job.id()))
+            previous= jobs.put(job.id(), new JobRecord(job, nextSequence++));
+        return previous != null;
     }
 
     /** Runs the next eligible job, if any. @return the id of the job that ran */
