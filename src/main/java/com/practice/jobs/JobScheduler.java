@@ -57,12 +57,16 @@ public class JobScheduler {
             return Optional.empty();
         }
         candidates.sort(RUN_ORDER);
-        JobRecord next = candidates.get(0);
-        if (!limiter.tryAcquire(next.job.tenantId(), now)) {
-            return Optional.empty();
+
+        for (JobRecord record : candidates) {
+            if (limiter.tryAcquire(record.job.tenantId(), now)) {
+                execute(record, now);
+                return Optional.of(record.job.id());
+            }
         }
-        execute(next, now);
-        return Optional.of(next.job.id());
+
+
+        return Optional.empty();
     }
 
     public JobState state(String jobId) {
